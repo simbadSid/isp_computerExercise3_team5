@@ -11,11 +11,14 @@ clearall()
 import re
 import numpy as np
 import matplotlib.pyplot as plt
- 
+
 # Import your functions from previous computer exercises
-from ce01Functions import myMin
-from ce01Functions import myMax
-from ce01Functions import myHistogram
+from ispFunctions import myMin
+from ispFunctions import myMax
+from ispFunctions import myHistogram
+
+
+
 
 # Function to read a pgm image from a file
 def read_pgm(filename, byteorder='>'):
@@ -44,3 +47,6 @@ def read_pgm(filename, byteorder='>'):
 def displayImage(image):
     plt.imshow(image, plt.cm.gray, vmin=0, vmax=255)
     plt.show()
+    
+image = read_pgm("../resource/pollen.pgm")
+displayImage(image)
