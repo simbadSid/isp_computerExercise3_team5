@@ -4,22 +4,18 @@ def clearall():
     for var in all:
         del globals()[var]
 #############################################
-
+ 
 clearall()
-
+ 
 # imports necessary for this exercise       
 import re
 import numpy as np
 import matplotlib.pyplot as plt
-
+import matplotlib.image as mpimg
+ 
 # Import your functions from previous computer exercises
-from ispFunctions import myMin
-from ispFunctions import myMax
-from ispFunctions import myHistogram
-
-
-
-
+from ispFunctions import myMin, myMax, myHistogram
+ 
 # Function to read a pgm image from a file
 def read_pgm(filename, byteorder='>'):
     """Return image data from a raw PGM file as numpy array.
@@ -47,6 +43,65 @@ def read_pgm(filename, byteorder='>'):
 def displayImage(image):
     plt.imshow(image, plt.cm.gray, vmin=0, vmax=255)
     plt.show()
-    
-image = read_pgm("../resource/pollen.pgm")
-displayImage(image)
+
+
+def displayHistogram(binPos, binVal, intervalLength):
+    plt.figure()
+    plt.grid()
+    plt.bar(binPos, binVal, intervalLength)
+    x1,x2,y1,y2 = plt.axis()
+    plt.axis((0,256,y1,y2))
+    plt.title('Histogram')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.show()
+
+def stretchContrast(inputImage, newRangeMin, newRangeMax):
+    actualMax = myMax(inputImage)
+    actualMin = myMin(inputImage)
+    outputImage = np.zeros(len(inputImage))
+    for i in range(len(inputImage)):
+        newVal = newRangeMin + (newRangeMax - newRangeMin) / (actualMax - actualMin) * (inputImage[i] - actualMin)
+        outputImage[i] = newVal
+    return outputImage
+
+if __name__ == "__main__":
+    # open image (choose the right one)
+    path = "../resource/pollen.pgm"
+    # path = "../resource/amelie.pgm"
+    # path = "../resource/mystery.pgm"
+    img = read_pgm(path)
+    (width, height) = img.shape
+
+    # perform contrasting
+    imgContrasted = stretchContrast(img.flatten(), 0, 255)
+    # change image from 1D to 2D
+    imgStretched = imgContrasted.reshape(width, height)
+    # show what happened
+    displayImage(img)
+    displayImage(imgStretched)
+
+    # show histograms to compare them
+    intervalLength = 1
+    [binValBefore, binPosBefore] = myHistogram(img.flatten(), intervalLength)
+    [binValAfter, binPosAfter] = myHistogram(imgContrasted, intervalLength)
+    displayHistogram(binPosBefore, binValBefore, intervalLength)
+    displayHistogram(binPosAfter, binValAfter, intervalLength)
+
+    # print values of histograms if needed
+    # print("Bins positions:")
+    # print(binValBefore)
+    # print("Bins values:")
+    # print(binValBefore)
+
+    # print("Bins positions:")
+    # print(binPosAfter)
+    # print("Bins values:")
+    # print(binValAfter)
+
+
+
+
+
+
+
