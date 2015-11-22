@@ -56,9 +56,7 @@ def displayHistogram(binPos, binVal, intervalLength):
     plt.ylabel('y')
     plt.show()
 
-def stretchContrast(inputImage, newRangeMin, newRangeMax):
-    actualMax = myMax(inputImage)
-    actualMin = myMin(inputImage)
+def stretchContrast(inputImage, newRangeMin, newRangeMax, actualMin, actualMax):
     outputImage = np.zeros(len(inputImage))
     for i in range(len(inputImage)):
         newVal = newRangeMin + (newRangeMax - newRangeMin) / (actualMax - actualMin) * (inputImage[i] - actualMin)
@@ -74,7 +72,9 @@ if __name__ == "__main__":
     (width, height) = img.shape
 
     # perform contrasting
-    imgContrasted = stretchContrast(img.flatten(), 0, 255)
+    actualMax = myMax(img.flatten())
+    actualMin = myMin(img.flatten())
+    imgContrasted = stretchContrast(img.flatten(), 0, 255, actualMin, actualMax)
     # change image from 1D to 2D
     imgStretched = imgContrasted.reshape(width, height)
     # show what happened
