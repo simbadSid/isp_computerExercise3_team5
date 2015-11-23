@@ -15,6 +15,8 @@ import matplotlib.image as mpimg
  
 # Import your functions from previous computer exercises
 from ispFunctions import myMin, myMax, myHistogram
+
+SAVE_IMAGE = True
  
 # Function to read a pgm image from a file
 def read_pgm(filename, byteorder='>'):
@@ -42,6 +44,8 @@ def read_pgm(filename, byteorder='>'):
 # Function used in this computer exercise to display an images                                   
 def displayImage(image):
     plt.imshow(image, plt.cm.gray, vmin=0, vmax=255)
+    if SAVE_IMAGE:
+        plt.savefig('../output/img.png')
     plt.show()
 
 
@@ -54,9 +58,13 @@ def displayHistogram(binPos, binVal, intervalLength):
     plt.title('Histogram')
     plt.xlabel('x')
     plt.ylabel('y')
+    if SAVE_IMAGE:
+        plt.savefig('../output/hist.png')
     plt.show()
 
-def stretchContrast(inputImage, newRangeMin, newRangeMax, actualMin, actualMax):
+def stretchContrast(inputImage, newRangeMin, newRangeMax):
+    actualMax = myMax(img.flatten())
+    actualMin = myMin(img.flatten())
     outputImage = np.zeros(len(inputImage))
     for i in range(len(inputImage)):
         newVal = newRangeMin + (newRangeMax - newRangeMin) / (actualMax - actualMin) * (inputImage[i] - actualMin)
@@ -72,9 +80,7 @@ if __name__ == "__main__":
     (width, height) = img.shape
 
     # perform contrasting
-    actualMax = myMax(img.flatten())
-    actualMin = myMin(img.flatten())
-    imgContrasted = stretchContrast(img.flatten(), 0, 255, actualMin, actualMax)
+    imgContrasted = stretchContrast(img.flatten(), 0, 255)
     # change image from 1D to 2D
     imgStretched = imgContrasted.reshape(width, height)
     # show what happened
